@@ -64,8 +64,9 @@ export default function Game() {
   })
 
   return (
-    <div className={winner ? 'game disabled' : 'game'}>
-      <div className="game-board">
+    <div className='bg-cyan-500 p-4 w-full h-full flex justify-center items-center'>
+       <div className={winner ? 'game disabled' : 'game'}>
+      <div className="bg-gray=200">
         <Board
           squares={current.squares}
           onClick={(i) => {
@@ -74,11 +75,13 @@ export default function Game() {
         />
       </div>
 
-      <div className="game-info">
+      <div className="game-info bg-red-300">
         <div>{status}</div>
         <ul>{moves}</ul>
       </div>
     </div>
+    </div>
+   
   )
 }
 

@@ -2,7 +2,10 @@ import Game from "./components/Game"
 
 function App() {
   return (
-  <Game/>
+    <div className="bg-gray-200 w-full h-full flex justify-center items-center">
+      <Game/>
+    </div>
+  
   );
 }
 
