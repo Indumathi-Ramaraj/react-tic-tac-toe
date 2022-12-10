@@ -1,88 +1,91 @@
-import React, { useReducer } from 'react'
-import Board from './Board'
+import React, { useReducer } from "react";
+import Board from "./Board";
+import X from "../../src/letterX.png";
+import O from "../../src/letterO.png";
 
 const reducer = (state, action) => {
   switch (action.type) {
-    case 'JUMP':
+    case "JUMP":
       return {
         ...state,
         xIsNext: action.payload.step % 2 === 0,
         history: state.history.slice(0, action.payload.step + 1),
-      }
-    case 'MOVE':
+      };
+    case "MOVE":
       return {
         ...state,
         history: state.history.concat({
           squares: action.payload.squares,
         }),
         xIsNext: !state.xIsNext,
-      }
+      };
     default:
-      return state
+      return state;
   }
-}
+};
 
 export default function Game() {
   const [state, dispatch] = useReducer(reducer, {
     xIsNext: true,
     history: [{ squares: Array(9).fill(null) }],
-  })
+  });
 
-  const { xIsNext, history } = state
+  const { xIsNext, history } = state;
 
   const jumpTo = (step) => {
-    dispatch({ type: 'JUMP', payload: { step } })
-  }
+    dispatch({ type: "JUMP", payload: { step } });
+  };
 
   const handleClick = (i) => {
-    const current = history[history.length - 1]
-    const squares = current.squares.slice()
-    const winner = calculateWinner(squares)
+    const current = history[history.length - 1];
+    const squares = current.squares.slice();
+    const winner = calculateWinner(squares);
     if (winner || squares[i]) {
-      return
+      return;
     }
-    squares[i] = xIsNext ? 'X' : 'O'
-    dispatch({ type: 'MOVE', payload: { squares } })
-  }
+    squares[i] = xIsNext ? <img src={X.src} /> : <img src={O.src} />;
+    dispatch({ type: "MOVE", payload: { squares } });
+  };
 
-  const current = history[history.length - 1]
-  const winner = calculateWinner(current.squares)
+  const current = history[history.length - 1];
+  const winner = calculateWinner(current.squares);
 
   const status = winner
-    ? winner === 'D'
-      ? 'Draw'
-      : 'Winner is ' + winner
-    : 'Next player is ' + [xIsNext ? 'X' : 'O']
+    ? winner === "D"
+      ? "Draw"
+      : "Winner is " + winner
+    : "Next player is " + [xIsNext ? <img src={X.src} /> : <img src={O.src} />];
 
   const moves = history.map((step, move) => {
-    const desc = move ? 'Go to step: ' + move : 'Start the Game'
+    const desc = move ? "Go to step: " + move : "Start the Game";
     return (
       <li key={move}>
         <button onClick={() => jumpTo(move)}>{desc}</button>
       </li>
-    )
-  })
+    );
+  });
 
   return (
-    <div className='bg-cyan-500 p-4 w-full h-full flex justify-center items-center'>
-       <div className={winner ? 'game disabled' : 'game'}>
-      <div className="bg-gray=200">
-        <Board
-          squares={current.squares}
-          onClick={(i) => {
-            handleClick(i)
-          }}
-        />
-      </div>
+    <div className="w-full h-screen bg-gradient-to-r bg-cyan-400  flex justify-center items-center">
+      <div className={winner ? "game disabled" : "game"}>
+        <div>
+          <div className="">
+            <Board
+              squares={current.squares}
+              onClick={(i) => {
+                handleClick(i);
+              }}
+            />
+          </div>
 
-      <div className="game-info bg-red-300">
-        <div>{status}</div>
-        <ul>{moves}</ul>
+          <div className="game-info bg-red-300">
+            <div>{status}</div>
+            <ul>{moves}</ul>
+          </div>
+        </div>
       </div>
     </div>
-    </div>
-   
-  )
+  );
 }
 
 const calculateWinner = (squares) => {
@@ -95,17 +98,17 @@ const calculateWinner = (squares) => {
     [2, 5, 8],
     [0, 4, 8],
     [2, 4, 6],
-  ]
-  let isDraw = true
+  ];
+  let isDraw = true;
   for (let i = 0; i < winnerLines.length; i++) {
-    const [a, b, c] = winnerLines[i]
+    const [a, b, c] = winnerLines[i];
     if (squares[a] && squares[a] === squares[b] && squares[b] === squares[c]) {
-      return squares[a]
+      return squares[a];
     }
     if (!squares[a] || !squares[b] || !squares[c]) {
-      isDraw = false
+      isDraw = false;
     }
   }
-  if (isDraw) return 'D'
-  return null
-}
+  if (isDraw) return "D";
+  return null;
+};
