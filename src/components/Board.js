@@ -1,8 +1,7 @@
-import React from 'react'
-import Square from './Square'
+import React from "react";
+import Square from "./Square";
 
 export default function Board(props) {
-  console.log('props from bo....', props)
   return (
     <div>
       <div className="flex flex-col gap-y-2">

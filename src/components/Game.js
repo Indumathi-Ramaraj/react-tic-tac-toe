@@ -1,7 +1,5 @@
 import React, { useReducer } from "react";
 import Board from "./Board";
-import X from "../../src/letterX.png";
-import O from "../../src/letterO.png";
 
 const reducer = (state, action) => {
   switch (action.type) {
@@ -39,22 +37,29 @@ export default function Game() {
   const handleClick = (i) => {
     const current = history[history.length - 1];
     const squares = current.squares.slice();
+    console.log("Square..", squares);
+
     const winner = calculateWinner(squares);
+
     if (winner || squares[i]) {
       return;
     }
-    squares[i] = xIsNext ? <img src={X.src} /> : <img src={O.src} />;
+
+    //squares[i] = xIsNext ? ;
+
+    squares[i] = xIsNext ? "X" : "O";
     dispatch({ type: "MOVE", payload: { squares } });
   };
 
   const current = history[history.length - 1];
+
   const winner = calculateWinner(current.squares);
 
   const status = winner
     ? winner === "D"
       ? "Draw"
       : "Winner is " + winner
-    : "Next player is " + [xIsNext ? <img src={X.src} /> : <img src={O.src} />];
+    : "Next player is " + [xIsNext ? "X" : "O"];
 
   const moves = history.map((step, move) => {
     const desc = move ? "Go to step: " + move : "Start the Game";
@@ -66,22 +71,22 @@ export default function Game() {
   });
 
   return (
-    <div className="w-full h-screen bg-gradient-to-r bg-cyan-400  flex justify-center items-center">
-      <div className={winner ? "game disabled" : "game"}>
-        <div>
-          <div className="">
-            <Board
-              squares={current.squares}
-              onClick={(i) => {
-                handleClick(i);
-              }}
-            />
-          </div>
+    <div
+      className={`${
+        winner ? "cursor-not-allowed" : "cursor-pointer"
+      } w-full h-screen bg-gradient-to-r bg-cyan-400  flex justify-center items-center`}
+    >
+      <div className="flex flex-col gap-y-6 ">
+        <Board
+          squares={current.squares}
+          onClick={(i) => {
+            handleClick(i);
+          }}
+        />
 
-          <div className="game-info bg-red-300">
-            <div>{status}</div>
-            <ul>{moves}</ul>
-          </div>
+        <div className="flex gap-x-8">
+          <div>{status}</div>
+          <ul>{moves}</ul>
         </div>
       </div>
     </div>
@@ -102,6 +107,7 @@ const calculateWinner = (squares) => {
   let isDraw = true;
   for (let i = 0; i < winnerLines.length; i++) {
     const [a, b, c] = winnerLines[i];
+
     if (squares[a] && squares[a] === squares[b] && squares[b] === squares[c]) {
       return squares[a];
     }
