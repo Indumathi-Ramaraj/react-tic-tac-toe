@@ -1,9 +1,12 @@
 import React, { useReducer } from "react";
 import Board from "./Board";
+import { RiArrowGoBackLine } from "react-icons/ri";
 
 const reducer = (state, action) => {
   switch (action.type) {
     case "JUMP":
+      debugger;
+      console.log("history..", state, action);
       return {
         ...state,
         xIsNext: action.payload.step % 2 === 0,
@@ -17,6 +20,7 @@ const reducer = (state, action) => {
         }),
         xIsNext: !state.xIsNext,
       };
+
     default:
       return state;
   }
@@ -37,16 +41,11 @@ export default function Game() {
   const handleClick = (i) => {
     const current = history[history.length - 1];
     const squares = current.squares.slice();
-    console.log("Square..", squares);
 
     const winner = calculateWinner(squares);
-
     if (winner || squares[i]) {
       return;
     }
-
-    //squares[i] = xIsNext ? ;
-
     squares[i] = xIsNext ? "X" : "O";
     dispatch({ type: "MOVE", payload: { squares } });
   };
@@ -55,37 +54,48 @@ export default function Game() {
 
   const winner = calculateWinner(current.squares);
 
+  console.log("state..", state.history.length);
+
   const status = winner
     ? winner === "D"
       ? "Draw"
       : "Winner is " + winner
+    : state.history.length === 1
+    ? "First player is X"
     : "Next player is " + [xIsNext ? "X" : "O"];
 
   const moves = history.map((step, move) => {
-    const desc = move ? "Go to step: " + move : "Start the Game";
+    const steps =
+      state.history.length === 1 ? "Start the Game" : "Go to step: " + move;
     return (
-      <li key={move}>
-        <button onClick={() => jumpTo(move)}>{desc}</button>
-      </li>
+      <div className="flex gap-x-4">
+        <li key={move}>
+          <button
+            onClick={() => jumpTo(move)}
+            className="font-medium text-base"
+          >
+            {steps}
+          </button>
+        </li>
+      </div>
     );
   });
 
   return (
     <div
-      className={`${
-        winner ? "cursor-not-allowed" : "cursor-pointer"
-      } w-full h-screen bg-gradient-to-r bg-cyan-400  flex justify-center items-center`}
+      className={` w-full h-screen bg-gradient-to-r bg-cyan-400  flex justify-center items-center`}
     >
-      <div className="flex flex-col gap-y-6 ">
+      <div className="flex  gap-x-6 ">
         <Board
           squares={current.squares}
           onClick={(i) => {
             handleClick(i);
           }}
+          winner={winner}
         />
 
         <div className="flex gap-x-8">
-          <div>{status}</div>
+          <div className="font-medium text-xl">{status}</div>
           <ul>{moves}</ul>
         </div>
       </div>
